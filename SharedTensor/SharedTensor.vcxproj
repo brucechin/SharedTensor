@@ -149,6 +149,7 @@
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="tensor.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SharedTensor.cpp" />
