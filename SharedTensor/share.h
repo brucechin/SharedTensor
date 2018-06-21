@@ -9,13 +9,16 @@ template<class T>
 class Share {
 
 private:
-	int nDev;
-	vector<bool> flag = vector<bool>(8,false);
-	vector<T> data = vector<T>(8, 0);
-	float mean;
+	int nDev=4;
+	bool flag[8];
+	T mean ;
 	bool meanReady = false;
 public:
-
+    T data[8];
+    Share(){
+        memset(flag,false,sizeof(bool));
+        
+    }
 	bool Push(T input,int index) {
 
 		if (flag[index] == false) {
@@ -29,11 +32,13 @@ public:
 
 	bool MeanReady() {
 		if (!meanReady) {
+            if(!flag[0]) return false;
+
 			for (int i = 0; i < nDev; i++) {
 				if (!flag[i]) return false;
-				else mean += data[i];
+				else data[0] += data[i];
 			}
-			mean /= nDev;
+			mean = data[0] * 1.0f /  nDev;
 			meanReady = true;
 		}
 		return true;
@@ -43,17 +48,15 @@ public:
 		for (int i = 0; i < nDev; i++) {
 			if (flag[i]) return;
 		}
-		mean = 0;
 		meanReady = false;
 	}
 
-	T Pop(int index) {//可以改为无返回类型，把mean赋给传入的指针对应的值
-		if (MeanReady()) {
-			flag[index] = false;
-			T tmp = mean;
-			ResetMean();
-			return tmp;
-		}
+	T Pop(int index) {
+		while(!MeanReady());//deadlock may occur 
+       		flag[index] = false;
+		T tmp = mean;
+		ResetMean();
+		return tmp;    
 	}
 
 };
